@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Balance Enquiry</h2>
+<div class="card">
+    <form method="POST">
+        <label>Account Number <input type="text" name="account_number" required></label>
+        <button type="submit" class="btn-primary">Check Balance</button>
+    </form>
+</div>
+{% if acc %}
+<div class="card result-card">
+    <h3>Account {{ acc['account_number'] }}</h3>
+    <p><strong>Customer:</strong> {{ acc['name'] }}</p>
+    <p><strong>Type:</strong> {{ acc['account_type'] }}</p>
+    <p><strong>Status:</strong> <span class="badge {{ acc['status'] }}">{{ acc['status'] }}</span></p>
+    <p class="big-balance">₹{{ '%.2f'|format(acc['balance']) }}</p>
+</div>
+{% endif %}
+{% endblock %}

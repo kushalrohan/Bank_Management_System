@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Account Management</h2>
+<table>
+    <thead><tr><th>Account #</th><th>Customer</th><th>Type</th><th>Balance</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for a in accounts %}
+        <tr>
+            <td>{{ a['account_number'] }}</td>
+            <td>{{ a['name'] }}</td>
+            <td>{{ a['account_type'] }}</td>
+            <td>₹{{ '%.2f'|format(a['balance']) }}</td>
+            <td><span class="badge {{ a['status'] }}">{{ a['status'] }}</span></td>
+            <td>
+                <a class="btn-secondary" href="{{ url_for('toggle_account', acc_id=a['id']) }}">
+                    {{ 'Deactivate' if a['status']=='active' else 'Activate' }}
+                </a>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="6">No accounts.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

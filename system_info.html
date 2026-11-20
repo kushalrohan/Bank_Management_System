@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}System Info{% endblock %}
+{% block content %}
+<h2>SQLite System Information (PRAGMA)</h2>
+
+<h3>PRAGMA database_list</h3>
+<table>
+    <tr>{% for k in pragmas['database_list'][0].keys() %}<th>{{ k }}</th>{% endfor %}</tr>
+    {% for r in pragmas['database_list'] %}
+    <tr>{% for v in r.values() %}<td>{{ v }}</td>{% endfor %}</tr>
+    {% endfor %}
+</table>
+
+<h3>PRAGMA table_info(accounts)</h3>
+<table>
+    <tr>{% for k in pragmas['table_info(accounts)'][0].keys() %}<th>{{ k }}</th>{% endfor %}</tr>
+    {% for r in pragmas['table_info(accounts)'] %}
+    <tr>{% for v in r.values() %}<td>{{ v }}</td>{% endfor %}</tr>
+    {% endfor %}
+</table>
+
+<h3>PRAGMA table_info(transactions)</h3>
+<table>
+    <tr>{% for k in pragmas['table_info(transactions)'][0].keys() %}<th>{{ k }}</th>{% endfor %}</tr>
+    {% for r in pragmas['table_info(transactions)'] %}
+    <tr>{% for v in r.values() %}<td>{{ v }}</td>{% endfor %}</tr>
+    {% endfor %}
+</table>
+
+<h3>PRAGMA foreign_key_list(accounts)</h3>
+<table>
+    <tr>{% for k in pragmas['foreign_key_list(accounts)'][0].keys() %}<th>{{ k }}</th>{% endfor %}</tr>
+    {% for r in pragmas['foreign_key_list(accounts)'] %}
+    <tr>{% for v in r.values() %}<td>{{ v }}</td>{% endfor %}</tr>
+    {% endfor %}
+</table>
+
+<h3>PRAGMA index_list(customers)</h3>
+<table>
+    <tr>{% for k in pragmas['index_list(customers)'][0].keys() %}<th>{{ k }}</th>{% endfor %}</tr>
+    {% for r in pragmas['index_list(customers)'] %}
+    <tr>{% for v in r.values() %}<td>{{ v }}</td>{% endfor %}</tr>
+    {% endfor %}
+</table>
+
+<h3>PRAGMA integrity_check</h3>
+<pre>{{ pragmas['integrity_check'] }}</pre>
+
+<h3>PRAGMA journal_mode / page_size / user_version</h3>
+<pre>
+journal_mode : {{ pragmas['journal_mode'] }}
+page_size    : {{ pragmas['page_size'] }}
+user_version : {{ pragmas['user_version'] }}
+</pre>
+
+<h3>All objects in bank.db (sqlite_master)</h3>
+<table>
+    <tr><th>Type</th><th>Name</th><th>Table</th></tr>
+    {% for t in objects %}
+    <tr><td>{{ t['type'] }}</td><td>{{ t['name'] }}</td><td>{{ t['tbl_name'] }}</td></tr>
+    {% endfor %}
+</table>
+
+<h3>All objects in audit.db (audit.sqlite_master)</h3>
+<table>
+    <tr><th>Type</th><th>Name</th><th>Table</th></tr>
+    {% for t in audit_objects %}
+    <tr><td>{{ t['type'] }}</td><td>{{ t['name'] }}</td><td>{{ t['tbl_name'] }}</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

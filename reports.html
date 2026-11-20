@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h2>Analytical Reports</h2>
+
+<h3>1. Transactions grouped by type (GROUP BY)</h3>
+<table>
+    <tr><th>Type</th><th>Count</th><th>Total Amount</th></tr>
+    {% for r in data.by_type %}
+    <tr>
+        <td>{{ r['type'] }}</td>
+        <td>{{ r['count'] }}</td>
+        <td>₹{{ '%.2f'|format(r['total']) }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>2. Accounts per customer (GROUP BY + HAVING)</h3>
+<table>
+    <tr><th>Customer</th><th># Accounts</th><th>Total Balance</th></tr>
+    {% for r in data.multi_accounts %}
+    <tr>
+        <td>{{ r['name'] }}</td>
+        <td>{{ r['num_accounts'] }}</td>
+        <td>₹{{ '%.2f'|format(r['total_balance']) }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>3. Monthly transaction volume (strftime)</h3>
+<table>
+    <tr><th>Month</th><th>Transactions</th><th>Volume</th></tr>
+    {% for r in data.monthly %}
+    <tr>
+        <td>{{ r['month'] }}</td>
+        <td>{{ r['tx_count'] }}</td>
+        <td>₹{{ '%.2f'|format(r['volume']) }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>4. Top 5 largest transactions (ORDER BY + LIMIT)</h3>
+<table>
+    <tr><th>ID</th><th>Account</th><th>Type</th><th>Amount</th><th>Date</th></tr>
+    {% for r in data.top5 %}
+    <tr>
+        <td>{{ r['id'] }}</td>
+        <td>{{ r['account_number'] }}</td>
+        <td>{{ r['type'] }}</td>
+        <td>₹{{ '%.2f'|format(r['amount']) }}</td>
+        <td>{{ r['created_at'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>5. Accounts above average balance (subquery)</h3>
+<table>
+    <tr><th>Account</th><th>Balance</th></tr>
+    {% for r in data.above_avg %}
+    <tr>
+        <td>{{ r['account_number'] }}</td>
+        <td>₹{{ '%.2f'|format(r['balance']) }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>6. Customers with no accounts (LEFT JOIN + IS NULL)</h3>
+<table>
+    <tr><th>Name</th><th>Email</th></tr>
+    {% for r in data.no_accounts %}
+    <tr><td>{{ r['name'] }}</td><td>{{ r['email'] }}</td></tr>
+    {% else %}
+    <tr><td colspan="2">All customers have accounts.</td></tr>
+    {% endfor %}
+</table>
+
+<h3>7. Today's transactions (DATE function)</h3>
+<table>
+    <tr><th>ID</th><th>Type</th><th>Amount</th><th>Balance After</th><th>Date</th></tr>
+    {% for r in data.today_tx %}
+    <tr>
+        <td>{{ r['id'] }}</td>
+        <td>{{ r['type'] }}</td>
+        <td>₹{{ '%.2f'|format(r['amount']) }}</td>
+        <td>₹{{ '%.2f'|format(r['balance_after']) }}</td>
+        <td>{{ r['created_at'] }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No transactions today.</td></tr>
+    {% endfor %}
+</table>
+
+<h3>8. Transactions in last 7 days</h3>
+<table>
+    <tr><th>ID</th><th>Type</th><th>Amount</th><th>Date</th></tr>
+    {% for r in data.last7 %}
+    <tr>
+        <td>{{ r['id'] }}</td>
+        <td>{{ r['type'] }}</td>
+        <td>₹{{ '%.2f'|format(r['amount']) }}</td>
+        <td>{{ r['created_at'] }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">None in last 7 days.</td></tr>
+    {% endfor %}
+</table>
+
+<h3>9. Account age in days (julianday)</h3>
+<table>
+    <tr><th>Account Number</th><th>Days Old</th></tr>
+    {% for r in data.accounts_age %}
+    <tr><td>{{ r['account_number'] }}</td><td>{{ r['days_old'] }}</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Audit Log{% endblock %}
+{% block content %}
+<h2>Audit Log</h2>
+
+<h3>Cross-database JOIN: admin (bank.db) × audit.audit_log (audit.db)</h3>
+<table>
+    <tr><th>Admin</th><th>Action</th><th>Details</th><th>Logged At</th></tr>
+    {% for r in cross_join %}
+    <tr>
+        <td>{{ r['username'] }}</td>
+        <td>{{ r['action'] }}</td>
+        <td>{{ r['details'] }}</td>
+        <td>{{ r['logged_at'] }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">No entries.</td></tr>
+    {% endfor %}
+</table>
+
+<h3>Local audit_log (bank.db — written by triggers + log_action)</h3>
+<table>
+    <tr><th>ID</th><th>Admin</th><th>Action</th><th>Details</th><th>Logged At</th></tr>
+    {% for r in logs %}
+    <tr>
+        <td>{{ r['id'] }}</td>
+        <td>{{ r['admin_user'] }}</td>
+        <td>{{ r['action'] }}</td>
+        <td>{{ r['details'] }}</td>
+        <td>{{ r['logged_at'] }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No logs.</td></tr>
+    {% endfor %}
+</table>
+
+<h3>Mirror audit.audit_log (audit.db — via cross-DB INSERT)</h3>
+<table>
+    <tr><th>ID</th><th>Admin</th><th>Action</th><th>Details</th><th>Logged At</th></tr>
+    {% for r in mirror_logs %}
+    <tr>
+        <td>{{ r['id'] }}</td>
+        <td>{{ r['admin_user'] }}</td>
+        <td>{{ r['action'] }}</td>
+        <td>{{ r['details'] }}</td>
+        <td>{{ r['logged_at'] }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No mirror logs.</td></tr>
+    {% endfor %}
+</table>
+
+<h3>Deleted Customers (trigger output — local bank.db)</h3>
+<table>
+    <tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Deleted At</th></tr>
+    {% for r in deleted_c %}
+    <tr>
+        <td>{{ r['id'] }}</td>
+        <td>{{ r['name'] }}</td>
+        <td>{{ r['email'] }}</td>
+        <td>{{ r['phone'] }}</td>
+        <td>{{ r['deleted_at'] }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No deletions yet.</td></tr>
+    {% endfor %}
+</table>
+
+<h3>Deleted Accounts (trigger output — local bank.db)</h3>
+<table>
+    <tr><th>ID</th><th>Account</th><th>Customer ID</th><th>Balance</th><th>Deleted At</th></tr>
+    {% for r in deleted_a %}
+    <tr>
+        <td>{{ r['id'] }}</td>
+        <td>{{ r['account_number'] }}</td>
+        <td>{{ r['customer_id'] }}</td>
+        <td>₹{{ '%.2f'|format(r['balance']) }}</td>
+        <td>{{ r['deleted_at'] }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No deletions yet.</td></tr>
+    {% endfor %}
+</table>
+{% endblock %}

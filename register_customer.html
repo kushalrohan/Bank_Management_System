@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Register Customer{% endblock %}
+{% block content %}
+<h2>Register Customer</h2>
+<div class="card">
+    <form method="POST">
+        <label>Name <input type="text" name="name" required></label>
+        <label>Email <input type="email" name="email" required></label>
+        <label>Phone <input type="text" name="phone" required></label>
+        <label>Address <textarea name="address" rows="2"></textarea></label>
+        <button type="submit" class="btn-primary">Register</button>
+    </form>
+</div>
+<h3>All Customers</h3>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for c in customers %}
+        <tr>
+            <td>{{ c['id'] }}</td>
+            <td>{{ c['name'] }}</td>
+            <td>{{ c['email'] }}</td>
+            <td>{{ c['phone'] }}</td>
+            <td>{{ c['address'] }}</td>
+            <td>
+                <a class="btn-secondary"
+                   href="{{ url_for('delete_customer', cid=c['id']) }}"
+                   onclick="return confirm('Delete this customer? (archived in audit.db)')">
+                   Delete
+                </a>
+            </td>
+        </tr>
+    {% else %}
+        <tr><td colspan="6">No customers yet.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
